@@ -1,4 +1,0 @@
-/Users/egortujmukov/Desktop/ООП/CPP_LABS/firstLab/build/CMakeFiles/lab.dir
-/Users/egortujmukov/Desktop/ООП/CPP_LABS/firstLab/build/CMakeFiles/gcd_test.dir
-/Users/egortujmukov/Desktop/ООП/CPP_LABS/firstLab/build/CMakeFiles/edit_cache.dir
-/Users/egortujmukov/Desktop/ООП/CPP_LABS/firstLab/build/CMakeFiles/rebuild_cache.dir
