@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include "/opt/homebrew/include/gtest/gtest.h"
 #include "Five.h"
 
 TEST(FiveTest, DefaultConstructor) {
@@ -69,7 +69,3 @@ TEST(FiveTest, SubtractionException) {
     EXPECT_THROW(a.sub(b), std::underflow_error);  
 }
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

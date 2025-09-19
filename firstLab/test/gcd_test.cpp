@@ -1,6 +1,5 @@
-// gcd_test.cpp
 #include "gcd.h"
-#include <gtest/gtest.h>
+#include "/opt/homebrew/include/gtest/gtest.h"
 
 TEST(GCDTest, OneZero) {
     EXPECT_EQ(gcd(0, 5), 5);
@@ -25,7 +24,3 @@ TEST(GCDTest, LargeNumbers) {
     EXPECT_EQ(gcd(123456, 789012), 12);
 }
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

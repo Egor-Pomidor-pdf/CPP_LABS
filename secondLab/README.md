@@ -1,6 +1,8 @@
-docker build -t mylab .
+mkdir build
+cd build
 
-docker run -it --rm mylab bash
+cmake ..
+
+make
 
 ./FiveTest
-
