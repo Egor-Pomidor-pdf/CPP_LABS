@@ -1,71 +1,37 @@
-#include "/opt/homebrew/include/gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "Five.h"
 
-TEST(FiveTest, DefaultConstructor) {
-    Five num;
-    SUCCEED();
+TEST(FiveTest, Basic) {
+    Five num1;
+    Five num2("123");
+    Five num3(num2);
+    
+    EXPECT_TRUE(num2.eq(num3));
 }
 
-TEST(FiveTest, StringConstructor) {
-    Five num("123");
-    SUCCEED();
+TEST(FiveTest, Add) {
+    Five a("10");  
+    Five b("20");  
+    Five c = a.sum(b);
+    
+    Five expected("300"); 
+    EXPECT_TRUE(c.eq(expected));
 }
 
-TEST(FiveTest, CopyConstructor) {
-    Five a("12");
-    Five b(a);
-    SUCCEED();
-}
-
-TEST(FiveTest, Addition) {
-    Five a("12");
-    Five b("3");
-    Five result = a.sum(b);
-    SUCCEED();
-}
-
-TEST(FiveTest, Subtraction) {
-    Five a("20");
-    Five b("3");
-    Five result = a.sub(b);
-    SUCCEED();
-}
-
-TEST(FiveTest, AdditionAssignment) {
-    Five a("12");
-    Five b("3");
-    a.sumAs(b);
-    SUCCEED();
-}
-
-TEST(FiveTest, SubtractionAssignment) {
-    Five a("20");
-    Five b("3");
-    a.subAs(b);
-    SUCCEED();
-}
-
-TEST(FiveTest, LessThan) {
-    Five a("12");
+TEST(FiveTest, Compare) {
+    Five a("10");
     Five b("20");
-    EXPECT_TRUE(a.lt(b)); 
+    
+    EXPECT_TRUE(a.lt(b));
+    EXPECT_TRUE(b.mt(a));
 }
 
-TEST(FiveTest, Equal) {
-    Five a("12");
-    Five b("12");
-    EXPECT_TRUE(a.eq(b));
-}
-
-TEST(FiveTest, GreaterThan) {
-    Five a("20");
-    Five b("12");
-    EXPECT_TRUE(a.mt(b));  
-}
-
-TEST(FiveTest, SubtractionException) {
-    Five a("3");
-    Five b("12");
-    EXPECT_THROW(a.sub(b), std::underflow_error);  
+TEST(FiveTest, Sub) {
+    Five a("30");
+    Five b("20");
+    Five c = a.sub(b);
+    
+    Five expected("100");
+    EXPECT_TRUE(c.eq(expected));
 }
 

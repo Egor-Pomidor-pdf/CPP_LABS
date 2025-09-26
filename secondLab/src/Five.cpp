@@ -1,60 +1,61 @@
 #include "Five.h"
 #include <stdexcept>  
 #include <iostream>
+#include "customVector.h"
 
 Five::Five(){
-    data = new unsigned char[1];
-    data[0] = 0;
-    n = 1;  
+    data.push(0);
+    
 };
 
 
 Five::Five(const std::string &num) {
-    n = num.size();
-    data = new unsigned char[n];
-    for (size_t i = 0; i < n; i++) {
-        data[n - 1 - i] = num[i] - '0';
+    if (num.empty()) {
+        data.push(0);
+        return;
     }
     
-}
-
-Five::Five(const Five &o) {
-    n = o.n;
-    data = new unsigned char[n];
-    for(size_t i = 0; i < n; i++) {
-        data[i] = o.data[i];
+    for (int i = num.length() - 1; i >= 0; i--) {
+        char c = num[i] - '0';
+        if(c < 0 || c > 4) {
+            throw std::invalid_argument("invalid num");
+        }
+        data.push(c);
     }
-    
-
 }
 
-Five::~Five() {
-    delete[] data;
-}
+Five::Five(const Five &o) : data(o.data) {}
+
+Five::~Five() {}
+
+
+size_t Five::size() const { return data.len(); }
+
 
 Five Five::sum(const Five &o) const {
     Five res;
-    delete []res.data;
-
-    res.n = std::max(n, o.n)+1;
-    res.data = new unsigned char[res.n]();
+    size_t n = std::max(size(), o.size());
 
     int per = 0;//перенос
-    for(size_t i = 0; i < res.n; i++) {
+    for(size_t i = 0; i < n; i++) {
         int s = per;//сумма
-        if (i < n) {
-            s += data[i];
+        if (i < size()) {
+            s += data.get(i);
         };
-        if (i < o.n) {
-            s += o.data[i];
+        if (i < o.size()) {
+            s += o.data.get(i);
         };
-        res.data[i] = s % 5;
+        unsigned char digit = s % 5;
         per = s / 5;
-    };
-
+        res.data.push(digit);
+    }
+    if (per > 0) {
+        res.data.push(per);
+    }
     return res;
 
 }
+
 
 Five Five::sub(const Five &o) const {
 
@@ -62,18 +63,14 @@ Five Five::sub(const Five &o) const {
     throw std::underflow_error("neg res");
     }
     Five res;
-    delete[] res.data;
-    res.n = std::max(n, o.n);
-    res.data = new unsigned char[res.n]();
-
+    size_t n = std::max(size(), o.size());
     int per = 0;
-    for (size_t i = 0; i < res.n; i++){
-        std::cout << per <<std::endl;
-        int d = data[i] - per;
-        if (i < o.n) {
-            d -= o.data[i];
-
+    for (size_t i = 0; i < n; i++){
+        int d = data.get(i) - per;
+        if (i < o.size()) {
+            d -= o.data.get(i);
         }
+
         if (d < 0) {
             d += 5;
             per = 1;
@@ -81,55 +78,31 @@ Five Five::sub(const Five &o) const {
             per = 0;
         }
 
-        res.data[i] = d;
-
-       
+        res.data.push(d);
     }
-
-    
-
     return res;
 }
 
-void Five::sumAs(const Five &o) {
-    Five res = this->sum(o);
-    delete []data;
-    n = res.n;
-    data = res.data;
-
-    res.data = nullptr;
-    res.n = 0;
-}
-
-void Five::subAs(const Five &o) {
-    Five res = this->sub(o);
-    delete[] data;
-    n = res.n;
-
-    data = res.data;
-    res.data = nullptr;
-    res.n = 0;
-}
-
 bool Five::lt(const Five &o) const {
-    if (n!= o.n) {
-        return n < o.n;
+    if (size() != o.size()) {
+        return size() < o.size();
     }
-    for (int i = n - 1; i >= 0; i--) {
-        if (data[i]!= o.data[i]){
-            return data[i] < o.data[i];
+    for (int i = size() - 1; i >= 0; i--) {
+        if (data.get(i) != o.data.get(i)) {
+            return data.get(i) < o.data.get(i);
         }
     }
-return false;
+    return false;
 }
 
 bool Five::eq(const Five &o) const {
-    if (n != o.n) {
+    if (size() != o.size()) {
         return false;
     }
+    size_t n = size();
     for (size_t i = 0; i < n; i++) {
        
-        if (data[i] != o.data[i]) {
+        if (data.get(i) != o.data.get(i)) {
             return false;
         }
     }
@@ -138,15 +111,22 @@ bool Five::eq(const Five &o) const {
 }
 
 bool Five::mt(const Five &o) const {
-    if (n != o.n) {
-         return n > o.n;
+    if (size() != o.size()) {
+         return size() > o.size();
     }
+    size_t n = size();
     for (int i = n - 1; i >= 0; i--) {
-        if (data[i]!= o.data[i]) {
-        return data[i] > o.data[i];
+        if (data.get(i)!= o.data.get(i)) {
+        return data.get(i) > o.data.get(i);
         }
     }
      
      return false;
 }
 
+void Five::print() const {
+    for (int i = size() - 1; i >= 0; i--) {
+        std::cout << (int)data.get(i);
+    }
+    std::cout << std::endl;
+}
