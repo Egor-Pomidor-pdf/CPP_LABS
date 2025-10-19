@@ -3,15 +3,12 @@ project(sec_lab)
 set(CMAKE_CXX_STANDARD 20)
 find_package(GTest REQUIRED)
 
-
-
 add_executable(FiveTest
     test/FiveTest
     test/MainTest
     src/Five.cpp
     src/customVector.cpp
 )
-
 
 add_executable(five
     src/Five.cpp
