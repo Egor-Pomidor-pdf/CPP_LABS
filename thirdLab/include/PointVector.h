@@ -4,11 +4,6 @@
 
 class PointVector
 {
-private:
-    size_t capacity;
-    size_t size;
-    Point *v;
-
 public:
     void push(Point v);
     void pop();
@@ -23,4 +18,9 @@ public:
     PointVector(PointVector &&other) noexcept;
     PointVector();
     ~PointVector();
+
+private:
+    size_t capacity;
+    size_t size;
+    Point *v;
 };

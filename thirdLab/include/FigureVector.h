@@ -4,12 +4,6 @@
 
 class FigureVector
 {
-private:
-    size_t size;
-    size_t capacity;
-    Figure **v;
-    void resize(size_t new_capacity);
-
 public:
     FigureVector();
     FigureVector(const FigureVector &other);
@@ -23,4 +17,10 @@ public:
     size_t len() const;
 
     void delIndex(size_t index);
+
+private:
+    size_t size;
+    size_t capacity;
+    Figure **v;
+    void resize(size_t new_capacity);
 };

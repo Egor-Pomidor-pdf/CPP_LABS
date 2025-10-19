@@ -1,5 +1,5 @@
-#include "../include/Triangle.h"
 #include <cmath>
+#include "../include/Triangle.h"
 
 Triangle::Triangle()
 {

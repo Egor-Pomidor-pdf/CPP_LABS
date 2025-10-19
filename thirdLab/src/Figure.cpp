@@ -1,6 +1,5 @@
 #include "../include/Figure.h"
-#include "../include/PointVector.h"
-#include "../include/Point.h"
+#include <iostream>
 
 Figure::Figure() {}
 
