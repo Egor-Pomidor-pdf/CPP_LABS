@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
-#include "../include/Triangle.h"
-#include "../include/Hexagon.h"
-#include "../include/Octagon.h"
+
+#include "Triangle.h"
+#include "Hexagon.h"
+#include "Octagon.h"
 
 // ---- Тесты для треугольника ----
 TEST(TriangleTest, AreaCalculation)

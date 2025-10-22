@@ -1,7 +1,8 @@
-#include "../include/Triangle.h"
-#include "../include/Hexagon.h"
-#include "../include/Octagon.h"
 #include <iostream>
+
+#include "Triangle.h"
+#include "Hexagon.h"
+#include "Octagon.h"
 
 int main()
 {

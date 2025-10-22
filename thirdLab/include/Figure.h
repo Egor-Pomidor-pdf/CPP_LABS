@@ -1,12 +1,12 @@
 #pragma once
 #include <iostream>
-#include "../include/Point.h"
-#include "../include/PointVector.h"
+
+#include "Point.h"
+#include "PointVector.h"
 
 class Figure
 {
 public:
-    PointVector v;
     Figure();
     virtual ~Figure();
     void ReadPoints(std::istream &);
@@ -17,6 +17,8 @@ public:
     friend bool operator!=(Figure, Figure);
 
 protected:
+    PointVector v;
+    long double AreaF(const PointVector&) const;
     Point Center() const;
 };
 

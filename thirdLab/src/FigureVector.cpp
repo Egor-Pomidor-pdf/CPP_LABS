@@ -1,36 +1,36 @@
-#include "../include/FigureVector.h"
-#include "../include/Figure.h"
+#include "FigureVector.h"
+#include "Figure.h"
 
-FigureVector::FigureVector() : size(0), capacity(1), v(new Figure *[capacity]) {}
+FigureVector::FigureVector() : size(0), capacity(1), figures(new Figure *[capacity]) {}
 
 FigureVector::FigureVector(const FigureVector &other)
     : size(other.size), capacity(other.capacity),
-      v(new Figure *[capacity])
+      figures(new Figure *[capacity])
 {
-    std::copy(other.v, other.v + size, v);
+    std::copy(other.figures, other.figures + size, figures);
 }
 
-FigureVector::FigureVector(FigureVector &&other) noexcept : size(other.size), capacity(other.capacity), v(other.v)
+FigureVector::FigureVector(FigureVector &&other) noexcept : size(other.size), capacity(other.capacity), figures(other.figures)
 {
     other.clear();
 }
 
-FigureVector::~FigureVector() { delete[] v; }
+FigureVector::~FigureVector() { delete[] figures; }
 
 void FigureVector::resize(size_t newsize)
 {
     capacity = newsize;
     Figure **t = new Figure *[capacity];
-    std::copy(v, v + size, t);
-    delete[] v;
-    v = t;
+    std::copy(figures, figures + size, t);
+    delete[] figures;
+    figures = t;
 }
 
 void FigureVector::delIndex(size_t ind)
 {
     for (size_t i = ind; i < size; ++i)
     {
-        v[i] = v[i + 1];
+        figures[i] = figures[i + 1];
     }
     --size;
 }
@@ -41,18 +41,19 @@ void FigureVector::push(Figure *c)
     {
         resize(2 * capacity);
     }
-    v[size++] = c;
+    figures[size++] = c;
 }
 
 void FigureVector::pop()
 {
-    if (size)
+    if (size == 0)
     {
-        --size;
+        throw std::out_of_range("Cannot pop");
     }
+    --size;
 }
 
-Figure *FigureVector::get(size_t i) const { return v[i]; }
+Figure *FigureVector::operator[](size_t index) const { return figures[index]; }
 
 size_t FigureVector::len() const { return size; }
 
@@ -60,6 +61,6 @@ void FigureVector::clear()
 {
     size = 0;
     capacity = 1;
-    delete[] v;
-    v = new Figure *[capacity];
+    delete[] figures;
+    figures = new Figure *[capacity];
 }

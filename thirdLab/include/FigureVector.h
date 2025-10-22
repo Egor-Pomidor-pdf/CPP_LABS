@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
-#include "../include/Figure.h"
+
+#include "Figure.h"
 
 class FigureVector
 {
@@ -13,14 +14,14 @@ public:
     void push(Figure *f);
     void clear();
     void pop();
-    Figure *get(size_t index) const;
+    void delIndex(size_t index);
     size_t len() const;
 
-    void delIndex(size_t index);
+    Figure *operator[](size_t index) const;
 
 private:
     size_t size;
     size_t capacity;
-    Figure **v;
+    Figure **figures;
     void resize(size_t new_capacity);
 };

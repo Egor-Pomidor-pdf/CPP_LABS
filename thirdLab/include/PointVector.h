@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
-#include "../include/Point.h"
+
+#include "Point.h"
 
 class PointVector
 {
@@ -8,10 +9,11 @@ public:
     void push(Point v);
     void pop();
     void clear();
-    void set(size_t n, Point p);
     void resize(size_t sz);
-    Point get(size_t) const;
     size_t len() const;
+
+    Point &operator[](size_t index);
+    const Point &operator[](size_t index) const;
 
     PointVector(const PointVector &other);
     PointVector(size_t n);
@@ -22,5 +24,5 @@ public:
 private:
     size_t capacity;
     size_t size;
-    Point *v;
+    Point *points;
 };

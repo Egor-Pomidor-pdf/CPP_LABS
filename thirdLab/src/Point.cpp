@@ -1,5 +1,4 @@
-#include "../include/Point.h"
-#include <iostream>
+#include "Point.h"
 
 bool operator==(const Point &a, const Point &b)
 {

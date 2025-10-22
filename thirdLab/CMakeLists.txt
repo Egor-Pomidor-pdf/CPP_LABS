@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(GTest REQUIRED)
 
+include_directories(include)
+
 add_executable(figure
     src/main.cpp
     src/Point.cpp

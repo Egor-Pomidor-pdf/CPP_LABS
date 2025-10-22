@@ -1,32 +1,32 @@
-#include "../include/PointVector.h"
+#include "PointVector.h"
 #include "../include/Point.h"
 
-PointVector::PointVector() : size(0), capacity(1), v(new Point[capacity]) {}
+PointVector::PointVector() : size(0), capacity(1), points(new Point[capacity]) {}
 
-PointVector::PointVector(size_t n) : size(n), capacity(2 * n), v(new Point[capacity]) {}
+PointVector::PointVector(size_t n) : size(n), capacity(2 * n), points(new Point[capacity]) {}
 
 PointVector::PointVector(const PointVector &other)
     : size(other.size), capacity(other.capacity),
-      v(new Point[capacity])
+      points(new Point[capacity])
 {
-    std::copy(other.v, other.v + size, v);
+    std::copy(other.points, other.points + size, points);
 }
 
 PointVector::PointVector(PointVector &&other) noexcept
-    : size(other.size), capacity(other.capacity), v(other.v)
+    : size(other.size), capacity(other.capacity), points(other.points)
 {
     other.clear();
 }
 
-PointVector::~PointVector() { delete[] v; }
+PointVector::~PointVector() { delete[] points; }
 
 void PointVector::resize(size_t newsize)
 {
     capacity = newsize;
     Point *t = new Point[capacity];
-    std::copy(v, v + size, t);
-    delete[] v;
-    v = t;
+    std::copy(points, points + size, t);
+    delete[] points;
+    points = t;
     size = newsize;
 }
 
@@ -36,7 +36,7 @@ void PointVector::push(Point c)
     {
         resize(2 * capacity);
     }
-    v[size++] = c;
+    points[size++] = c;
 }
 
 void PointVector::pop()
@@ -47,9 +47,15 @@ void PointVector::pop()
     }
 }
 
-void PointVector::set(size_t i, Point p) { v[i] = p; }
+Point &PointVector::operator[](size_t index)
+{
+    return points[index];
+}
 
-Point PointVector::get(size_t i) const { return v[i]; }
+const Point &PointVector::operator[](size_t index) const
+{
+    return points[index];
+}
 
 size_t PointVector::len() const { return size; }
 
@@ -57,6 +63,6 @@ void PointVector::clear()
 {
     size = 0;
     capacity = 1;
-    delete[] v;
-    v = new Point[capacity];
+    delete[] points;
+    points = new Point[capacity];
 }
