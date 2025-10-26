@@ -15,7 +15,6 @@ class Five {
         Five(const Five &o);
         Five(Five&& o) noexcept;
 
-
         Five sum(const Five &o) const;
         Five sub(const Five &o) const;
         bool lt(const Five &o) const;
@@ -25,3 +24,4 @@ class Five {
         size_t size() const;
         void print() const;
 };
+
