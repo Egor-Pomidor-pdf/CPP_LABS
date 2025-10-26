@@ -1,5 +1,5 @@
 #include "PointVector.h"
-#include "../include/Point.h"
+#include "Point.h"
 
 PointVector::PointVector() : size(0), capacity(1), points(new Point[capacity]) {}
 
@@ -41,6 +41,7 @@ void PointVector::push(Point c)
 
 void PointVector::pop()
 {
+
     if (size)
     {
         --size;
@@ -49,11 +50,19 @@ void PointVector::pop()
 
 Point &PointVector::operator[](size_t index)
 {
+    if (index >= size)
+    {
+        throw std::out_of_range("PointVector::operator[] - index out of range");
+    }
     return points[index];
 }
 
 const Point &PointVector::operator[](size_t index) const
 {
+    if (index >= size)
+    {
+        throw std::out_of_range("PointVector::operator[] const - index out of range");
+    }
     return points[index];
 }
 

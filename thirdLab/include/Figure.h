@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 
 #include "Point.h"
@@ -18,7 +19,7 @@ public:
 
 protected:
     PointVector v;
-    long double AreaF(const PointVector&) const;
+    long double AreaF(const PointVector &) const;
     Point Center() const;
 };
 
