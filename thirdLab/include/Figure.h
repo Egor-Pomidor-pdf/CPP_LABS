@@ -25,3 +25,10 @@ protected:
 
 std::istream &operator>>(std::istream &, Figure &);
 std::ostream &operator<<(std::ostream &, Figure &);
+
+
+class Multipier:
+{
+    public:
+    operator() 
+}
