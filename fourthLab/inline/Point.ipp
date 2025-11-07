@@ -11,15 +11,9 @@ template <scalar T>
 T Point<T>::y() const { return _y; }
 
 template <scalar T>
-std::istream &operator>>(std::istream &is, Point<T> &p)
-{
-    return is >> p._x >> p._y;
-}
-
-template <scalar T>
 std::ostream &operator<<(std::ostream &os, const Point<T> &p)
 {
-    return os << "(" << p._x << ", " << p._y << ")";
+    return os << "(" << p.x() << ", " << p.y() << ")";
 }
 
 template <scalar T>
