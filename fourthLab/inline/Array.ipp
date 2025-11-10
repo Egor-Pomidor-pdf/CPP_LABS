@@ -1,24 +1,26 @@
 template <typename T>
-Array<T>::Array() : _size(0), _capacity(1), _data(std::shared_ptr<T[]>(new T[1], std::default_delete<T[]>())) {}
+Array<T>::Array() : _size(0), _capacity(1)
+{
+    _data = std::shared_ptr<T[]>(new T[_capacity], deleter);
+}
 
 template <typename T>
 void Array<T>::resize(size_t newCapacity)
 {
-    std::shared_ptr<T[]> newData(new T[newCapacity], std::default_delete<T[]>());
+    auto new_data = std::shared_ptr<T[]>(new T[new_capacity], deleter);
 
     for (size_t i = 0; i < _size; ++i)
     {
-        newData[i] = std::move(_data[i]);
+        new_data[i] = _data[i];
     }
 
-    _data = std::move(newData);
+    _data = std::move(new_data);
     _capacity = newCapacity;
 }
 
 template <typename T>
-Array<T>::Array(const Array &other) : _size(other._size), _capacity(other._capacity)
+Array<T>::Array(const Array &other) : _size(other._size), _capacity(other._capacity), _data(std::shared_ptr<T[]>(new T[_capacity], deleter))
 {
-    _data = std::shared_ptr<T[]>(new T[_capacity], std::default_delete<T[]>());
 
     for (size_t i = 0; i < _size; ++i)
     {

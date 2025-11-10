@@ -24,6 +24,7 @@ private:
     size_t _capacity = 1;
     size_t _size = 0;
     void resize(size_t newCapacity);
+    static constexpr auto deleter = [](T* ptr) { delete[] ptr; };
 };
 
 #include "Array.ipp"
