@@ -18,6 +18,7 @@ void Array<T>::resize(size_t newCapacity)
     _capacity = newCapacity;
 }
 
+SFINE
 template <typename T>
 Array<T>::Array(const Array &other) : _size(other._size), _capacity(other._capacity), _data(std::shared_ptr<T[]>(new T[_capacity], deleter))
 {
