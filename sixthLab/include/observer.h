@@ -26,7 +26,5 @@ private:
 
 public:
     FileObserver(const std::string &filename = "log.txt");
-    void onFight(const std::shared_ptr<NPC> &attacker,
-                 const std::shared_ptr<NPC> &defender,
-                 bool success) override;
+    void onFight(const std::shared_ptr<NPC> &attacker, const std::shared_ptr<NPC> &defender, bool success) override;
 };
