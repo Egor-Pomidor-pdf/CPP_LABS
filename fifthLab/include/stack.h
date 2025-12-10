@@ -72,4 +72,9 @@ public:
     const_iterator end() const noexcept { return iterator(nullptr); }
 };
 
-#include "stack.ipp"
+// #include "stack.ipp"
+// std::vector<std::pair<int, int>> v(2);
+// v.emplace_back(1,2);
+// for (auto p : v) {
+//     cout << p->first << ' ' << p->second;
+// }
