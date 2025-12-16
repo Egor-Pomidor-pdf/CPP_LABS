@@ -1,20 +1,26 @@
-#include <iostream>
-#include <thread>
 #include <chrono>
-#include <random>
+#include <iostream>
 #include <memory>
+#include <random>
+#include <shared_mutex>
+#include <thread>
 
 #include "game_state.h"
 #include "movement_thread.h"
-#include "fight_thread.h"
 #include "npc_factory.h"
 #include "observer.h"
+
+// fight_thread.cpp реализует функцию с observer'ами, а в fight_thread.h прототип не совпадает.
+// Чтобы main.cpp соответствовал реализации — объявляем корректную сигнатуру здесь.
+void fight_thread(GameState &state,
+                  const std::shared_ptr<IFightObserver> &textObserver,
+                  const std::shared_ptr<IFightObserver> &fileObserver);
 
 int main()
 {
     GameState state;
 
-    // --- создаём observer ---
+    // --- observers ---
     auto textObserver = std::make_shared<TextObserver>();
     auto fileObserver = std::make_shared<FileObserver>("battle_log.txt");
 
@@ -23,45 +29,41 @@ int main()
     std::uniform_int_distribution<int> pos(0, GameState::MAP_SIZE);
     std::uniform_int_distribution<int> type(0, 2);
 
-    for (int i = 0; i < 50; ++i)
-    {
-        NpcType t = static_cast<NpcType>(type(gen));
-        std::string name = "npc_" + std::to_string(i);
+    constexpr int NPC_COUNT = 50;
+    state.npcs.reserve(NPC_COUNT);
 
-        auto npc = NPCFactory::create(t, name, pos(gen), pos(gen));
-        state.npcs.push_back(npc);
+    for (int i = 0; i < NPC_COUNT; ++i)
+    {
+        const NpcType t = static_cast<NpcType>(type(gen));
+        const std::string name = "npc_" + std::to_string(i);
+
+        if (auto npc = NPCFactory::create(t, name, pos(gen), pos(gen)))
+            state.npcs.push_back(npc);
     }
 
     // --- запуск потоков ---
     std::thread moveThread(movement_thread, std::ref(state));
-    std::thread fightThread(fight_thread,
-                            std::ref(state),
-                            textObserver,
-                            fileObserver);
-    // --- основной поток: вывод карты ---
-    auto start = std::chrono::steady_clock::now();
+    std::thread fightThread(fight_thread, std::ref(state), textObserver, fileObserver);
+
+    // --- основной поток: вывод состояния ---
+    const auto start = std::chrono::steady_clock::now();
 
     while (true)
     {
-        auto now = std::chrono::steady_clock::now();
-        int seconds = std::chrono::duration_cast<std::chrono::seconds>(now - start).count();
+        const auto now = std::chrono::steady_clock::now();
+        const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(now - start).count();
         if (seconds >= 30)
             break;
 
         {
-            std::shared_lock lock(state.npc_mutex);
-            std::lock_guard cout_lock(state.cout_mutex);
+            std::shared_lock<std::shared_mutex> lock(state.npc_mutex);
+            std::lock_guard<std::mutex> cout_lock(state.cout_mutex);
 
             std::cout << "\n=== MAP STATE (" << seconds << "s) ===\n";
             for (auto &npc : state.npcs)
             {
-                if (npc->isAlive())
-                {
-                    std::cout << npc->getType()
-                              << " " << npc->getName()
-                              << " (" << npc->getX()
-                              << ", " << npc->getY() << ")\n";
-                }
+                if (npc && npc->isAlive())
+                    std::cout << npc->getType() << " " << npc->getName() << " (" << npc->getX() << ", " << npc->getY() << ")\n";
             }
         }
 
@@ -78,11 +80,8 @@ int main()
     std::cout << "\n=== SURVIVORS ===\n";
     for (auto &npc : state.npcs)
     {
-        if (npc->isAlive())
-        {
-            std::cout << npc->getType()
-                      << " " << npc->getName() << "\n";
-        }
+        if (npc && npc->isAlive())
+            std::cout << npc->getType() << " " << npc->getName() << "\n";
     }
 
     return 0;
