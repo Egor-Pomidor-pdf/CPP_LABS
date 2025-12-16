@@ -5,7 +5,6 @@
 
 #include "movement_thread.h"
 
-
 static int clamp(int v, int min, int max)
 {
     return std::max(min, std::min(v, max));
@@ -14,7 +13,6 @@ static int clamp(int v, int min, int max)
 void movement_thread(GameState &state)
 {
     std::mt19937 gen(std::random_device{}());
-    std::uniform_int_distribution<int> move(-5, 5);
 
     while (state.running)
     {
@@ -25,6 +23,9 @@ void movement_thread(GameState &state)
             {
                 if (!a->isAlive())
                     continue;
+
+                int step = a->getMoveDistance();
+                std::uniform_int_distribution<int> move(-step, step);
 
                 int nx = clamp(a->getX() + move(gen), 0, GameState::MAP_SIZE);
                 int ny = clamp(a->getY() + move(gen), 0, GameState::MAP_SIZE);
@@ -38,7 +39,7 @@ void movement_thread(GameState &state)
                     double dx = a->getX() - b->getX();
                     double dy = a->getY() - b->getY();
 
-                    if (std::sqrt(dx * dx + dy * dy) <= 10)
+                    if (std::sqrt(dx * dx + dy * dy) <= a->getKillDistance())
                     {
                         std::lock_guard qlock(state.fight_mutex);
                         state.fights.push({a, b});

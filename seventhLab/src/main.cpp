@@ -2,15 +2,21 @@
 #include <thread>
 #include <chrono>
 #include <random>
+#include <memory>
 
 #include "game_state.h"
 #include "movement_thread.h"
 #include "fight_thread.h"
 #include "npc_factory.h"
+#include "observer.h"
 
 int main()
 {
     GameState state;
+
+    // --- создаём observer ---
+    auto textObserver = std::make_shared<TextObserver>();
+    auto fileObserver = std::make_shared<FileObserver>("battle_log.txt");
 
     // --- генерация NPC ---
     std::mt19937 gen(std::random_device{}());
@@ -28,8 +34,10 @@ int main()
 
     // --- запуск потоков ---
     std::thread moveThread(movement_thread, std::ref(state));
-    std::thread fightThread(fight_thread, std::ref(state));
-
+    std::thread fightThread(fight_thread,
+                            std::ref(state),
+                            textObserver,
+                            fileObserver);
     // --- основной поток: вывод карты ---
     auto start = std::chrono::steady_clock::now();
 

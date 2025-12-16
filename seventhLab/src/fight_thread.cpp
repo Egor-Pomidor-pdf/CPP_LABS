@@ -4,9 +4,10 @@
 #include <random>
 #include <thread>
 
-void fight_thread(GameState &state)
+void fight_thread(GameState &state,
+                  const std::shared_ptr<IFightObserver> &textObserver,
+                  const std::shared_ptr<IFightObserver> &fileObserver)
 {
-    auto observer = std::make_shared<TextObserver>();
     std::mt19937 gen(std::random_device{}());
     std::uniform_int_distribution<int> dice(1, 6);
 
@@ -14,31 +15,59 @@ void fight_thread(GameState &state)
     {
         FightTask task;
 
+        // --- получение задачи боя ---
         {
             std::lock_guard lock(state.fight_mutex);
             if (state.fights.empty())
-            {
                 continue;
-            }
+
             task = state.fights.front();
             state.fights.pop();
         }
 
-        if (!task.attacker->isAlive() || !task.defender->isAlive())
+        auto attacker = task.attacker;
+        auto defender = task.defender;
+
+        if (!attacker->isAlive() || !defender->isAlive())
             continue;
 
-        int attack = dice(gen);
-        int defense = dice(gen);
+        // --- проверка дистанции убийства ---
+        double dist = attacker->distanceTo(defender);
+        bool attackerCanKill = dist <= attacker->getKillDistance();
+        bool defenderCanKill = dist <= defender->getKillDistance();
 
-        if (attack > defense)
+        // --- дальник убивает ближника сразу ---
+        if (attackerCanKill && !defenderCanKill)
         {
-            auto visitor = std::make_shared<FightVisitor>(task.attacker, observer);
-            bool success = task.defender->accept(visitor);
-
-            if (success)
+            auto visitor = std::make_shared<FightVisitor>(attacker, textObserver);
+            if (defender->accept(visitor))
             {
                 std::lock_guard lock(state.npc_mutex);
-                task.defender->kill();
+                defender->kill();
+            }
+            fileObserver->onFight(attacker, defender, true);
+            continue;
+        }
+
+        // --- взаимный бой только если оба могут атаковать ---
+        if (attackerCanKill && defenderCanKill)
+        {
+            int attack = dice(gen);
+            int defense = dice(gen);
+
+            if (attack > defense)
+            {
+                auto visitor = std::make_shared<FightVisitor>(attacker, textObserver);
+                if (defender->accept(visitor))
+                {
+                    std::lock_guard lock(state.npc_mutex);
+                    defender->kill();
+                    fileObserver->onFight(attacker, defender, true);
+                }
+                else
+                {
+                    fileObserver->onFight(attacker, defender, false);
+                }
             }
         }
 

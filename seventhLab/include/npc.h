@@ -26,11 +26,14 @@ public:
     int getY() const { return y; }
     bool isAlive() const { return alive; }
     void kill() { alive = false; }
-    void setPosition(int nx, int ny) {
+    void setPosition(int nx, int ny)
+    {
         x = nx;
         y = ny;
     }
 
+    virtual int getMoveDistance() const = 0;
+    virtual int getKillDistance() const = 0;
     double distanceTo(const std::shared_ptr<NPC> &other) const;
 
     virtual std::string getType() const = 0;

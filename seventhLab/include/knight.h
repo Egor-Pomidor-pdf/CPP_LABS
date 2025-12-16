@@ -15,4 +15,6 @@ public:
     bool fight(const std::shared_ptr<Pegasus> &other) override;
 
     std::string getType() const override { return "Knight"; }
+    int getMoveDistance() const override { return 30; }
+    int getKillDistance() const override { return 10; }
 };
